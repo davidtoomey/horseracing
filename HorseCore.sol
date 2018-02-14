@@ -130,4 +130,8 @@ contract HorseCore is HorseMinting {
         // Actually unpause the contract.
         super.unpause();
     }
+
+    function getContractBalance() public view returns(uint) {
+        return this.balance;
+    }
 }
