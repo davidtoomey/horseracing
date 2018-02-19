@@ -13,6 +13,7 @@ contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
     function TwoPlayerRace(string nameOfRace, uint wager) public {
         uint raceGrandPrize = wager*2;
         _createRace(nameOfRace, 1 ether, 0, 0, RaceStatus.Started, raceGrandPrize, 0, 0);
+        racingPlayers = 0;
     }
 
     // function name() external view returns (string) {
@@ -77,6 +78,7 @@ contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
     
     function _enterRace(uint enterRaceId, uint enterHorseId) public onlyOwner payable {
         require(msg.value > races[enterRaceId].stake);
+        require(racingPlayers < 2);
         if (races[enterRaceId].horseOneId == 0) {
             races[enterRaceId].horseOneId = enterHorseId;
         }
@@ -84,7 +86,17 @@ contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
             races[enterRaceId].horseTwoId = enterHorseId;
         }
         racingPlayers++;
+        if (racingPlayers == 2) {
+            uint setGrandPrize = msg.value*2;
+            setGrandPrize = races[enterRaceId].grandPrize;
+            _startRace(enterRaceId, setGrandPrize, races[enterRaceId].horseOneId, races[enterRaceId].horseTwoId);
+        }
         // getHorse(enterHorseId);
+    }
+    
+    function _startRace(uint startRaceId, uint _setGrandPrize, uint hOneId, uint hTwoId) internal {
+        require(races[startRaceId].grandPrize > 0);
+        horses[hOneId];
     }
 
     // function decideWinner(uint _raceId) internal {
