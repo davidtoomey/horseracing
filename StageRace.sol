@@ -83,6 +83,7 @@ contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
         if (races[enterRaceId].horseTwoId == 0) {
             races[enterRaceId].horseTwoId = enterHorseId;
         }
+        racingPlayers++;
         // getHorse(enterHorseId);
     }
 
