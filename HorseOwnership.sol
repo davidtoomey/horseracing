@@ -1,13 +1,13 @@
 pragma solidity ^0.4.18;
 
 import "./HorseBase.sol";
-import "./ERC721Draft.sol";
+import "./ERC721.sol";
 
 /// @title The facet of the Cryptohorses core contract that manages ownership, ERC-721 (draft) compliant.
 /// @author Axiom Zen (https://www.axiomzen.co)
 /// @dev Ref: https://github.com/ethereum/EIPs/issues/721
 ///  See the HorseCore contract documentation to understand how the various contract facets are arranged.
-contract HorseOwnership is HorseBase, ERC721 {
+contract HorseOwnership is HorseBase, ERC721Enumerable, ERC721Original {
 
     /// @notice Name and symbol of the non fungible token, as defined in ERC721.
     string public name = "EtherHorse";
@@ -71,21 +71,21 @@ contract HorseOwnership is HorseBase, ERC721 {
     /// @param _to The address of the recipient, can be a user or contract.
     /// @param _tokenId The ID of the Horse to transfer.
     /// @dev Required for ERC-721 compliance.
-    function transfer(
-        address _to,
-        uint256 _tokenId
-    )
-        public
-        whenNotPaused
-    {
-        // Safety check to prevent against an unexpected 0x0 default.
-        require(_to != address(0));
-        // You can only send your own cat.
-        require(_owns(msg.sender, _tokenId));
+    // function transfer(
+    //     address _to,
+    //     uint256 _tokenId
+    // )
+    //     public
+    //     whenNotPaused
+    // {
+    //     // Safety check to prevent against an unexpected 0x0 default.
+    //     require(_to != address(0));
+    //     // You can only send your own cat.
+    //     require(_owns(msg.sender, _tokenId));
 
-        // Reassign ownership, clear pending approvals, emit Transfer event.
-        _transfer(msg.sender, _to, _tokenId);
-    }
+    //     // Reassign ownership, clear pending approvals, emit Transfer event.
+    //     _transfer(msg.sender, _to, _tokenId);
+    // }
 
     /// @notice Grant another address the right to transfer a specific Horse via
     ///  transferFrom(). This is the preferred flow for transfering NFTs to contracts.
@@ -93,22 +93,22 @@ contract HorseOwnership is HorseBase, ERC721 {
     ///  clear all approvals.
     /// @param _tokenId The ID of the Horse that can be transferred if this call succeeds.
     /// @dev Required for ERC-721 compliance.
-    function approve(
-        address _to,
-        uint256 _tokenId
-    )
-        public
-        whenNotPaused
-    {
-        // Only an owner can grant transfer approval.
-        require(_owns(msg.sender, _tokenId));
+    // function approve(
+    //     address _to,
+    //     uint256 _tokenId
+    // )
+    //     public
+    //     whenNotPaused
+    // {
+    //     // Only an owner can grant transfer approval.
+    //     require(_owns(msg.sender, _tokenId));
 
-        // Register the approval (replacing any previous approval).
-        _approve(_tokenId, _to);
+    //     // Register the approval (replacing any previous approval).
+    //     _approve(_tokenId, _to);
 
-        // Emit approval event.
-        Approval(msg.sender, _to, _tokenId);
-    }
+    //     // Emit approval event.
+    //     Approval(msg.sender, _to, _tokenId);
+    // }
 
     /// @notice Transfer a Horse owned by another address, for which the calling address
     ///  has previously been granted transfer approval by the owner.
