@@ -8,7 +8,7 @@ contract Race {
     // the number of robots currently battling
     function playerCount() external view returns (uint count);
     // creates a new Race, with a submitted user string for initial input/
-    function createRace(uint[] partIds, bytes32 commit, uint64 duration) external;
+    function createRace(string _raceName) external payable;
     // cancels the Race at RaceID
     function cancelRace(uint raceID) external;
 
@@ -18,5 +18,5 @@ contract Race {
     event RaceStage(uint indexed raceID);
     event RaceEnded(uint indexed raceID, address indexed winner);
     event RaceConcluded(uint indexed raceID);
-    event RacePropertyChanged(string name, uint previous, uint value);
+    // event RacePropertyChanged(string name, uint previous, uint value);
 }
