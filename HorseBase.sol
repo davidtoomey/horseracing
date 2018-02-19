@@ -66,6 +66,9 @@ contract HorseBase is HorseAccessControl {
         // numbers of their parents, plus one.
         // (i.e. max(matron.generation, sire.generation) + 1)
         uint16 generation;
+        uint16 level;
+        uint16 winCount;
+        uint16 lossCount;
     }
 
     /*** CONSTANTS ***/
@@ -104,7 +107,7 @@ contract HorseBase is HorseAccessControl {
 
     /// @dev A mapping from cat IDs to the address that owns them. All cats have
     ///  some valid owner address, even gen0 cats are created with a non-zero owner.
-    mapping (uint256 => address) public HorseIndexToOwner;
+    mapping (uint => address) public HorseIndexToOwner;
 
     // @dev A mapping from owner address to count of tokens that address owns.
     //  Used internally inside balanceOf() to resolve ownership count.
@@ -174,7 +177,10 @@ contract HorseBase is HorseAccessControl {
             sireId: uint32(_sireId),
             siringWithId: 0,
             cooldownIndex: 0,
-            generation: uint16(_generation)
+            generation: uint16(_generation),
+            level: 0,
+            winCount: 0,
+            lossCount: 0
         });
         uint256 newHorseId = horses.push(_horse) - 1;
 
