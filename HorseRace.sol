@@ -1,19 +1,28 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.17;
 
-import './Ownable.sol';
+import './Race.sol';
+import './HorseAccessControl.sol';
 
-contract HorseRaceFactory is Ownable {
-    function HorseRaceFactory() public {
-        
+contract HorseRace is HorseAccessControl {
+    
+    Race[] approvedRaces;
+    
+    function addApprovedRace(Race _race) external onlyCEO {
+        approvedRaces.push(_race);
     }
 
-    function createRace(uint minStake) public {
-
+    function _isApprovedRace() internal view returns (bool) {
+        for (uint8 i = 0; i < approvedRaces.length; i++) {
+            if (msg.sender == address(approvedRaces[i])) {
+                return true;
+            }
+        }
+        return false;
     }
-}
 
-contract HorseRace {
-    struct Race {
-
+    modifier onlyApprovedRaces(){
+        require(_isApprovedRace());
+        _;
     }
+
 }
