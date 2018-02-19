@@ -1,7 +1,6 @@
-
 pragma solidity ^0.4.18;
 
-import "./../ERC721Draft.sol";
+import "./ERC721.sol";
 
 /// @title Auction Core
 /// @dev Contains models, variables, and internal methods for the auction.
@@ -23,7 +22,7 @@ contract ClockAuctionBase {
     }
 
     // Reference to contract tracking NFT ownership
-    ERC721 public nonFungibleContract;
+    ERC721Original public nonFungibleContract;
 
     // Cut owner takes on each auction, measured in basis points (1/100 of a percent).
     // Values 0-10,000 map to 0%-100%
