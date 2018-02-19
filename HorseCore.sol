@@ -101,7 +101,10 @@ contract HorseCore is HorseMinting {
         uint256 matronId,
         uint256 sireId,
         uint256 generation,
-        uint256 genes
+        uint256 genes,
+        uint level,
+        uint winCount,
+        uint lossCount
     ) {
         Horse storage thisHorse = horses[_id];
 
@@ -116,6 +119,9 @@ contract HorseCore is HorseMinting {
         sireId = uint256(thisHorse.sireId);
         generation = uint256(thisHorse.generation);
         genes = thisHorse.genes;
+        level = thisHorse.level;
+        winCount = thisHorse.winCount;
+        lossCount = thisHorse.lossCount;
     }
 
     /// @dev Override unpause so it requires all external contract addresses
