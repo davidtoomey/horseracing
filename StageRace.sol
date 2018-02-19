@@ -11,8 +11,8 @@ contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
     HorseRace _base;
 
     function TwoPlayerRace(string nameOfRace, uint wager) public {
-        uint raceGrandPrize = wager*2;
-        _createRace(nameOfRace, 1 ether);
+        // uint raceGrandPrize = wager*2;
+        _createRace(nameOfRace, wager);
         racingPlayers = 0;
     }
 
