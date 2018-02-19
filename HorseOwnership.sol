@@ -10,8 +10,8 @@ import "./ERC721Draft.sol";
 contract HorseOwnership is HorseBase, ERC721 {
 
     /// @notice Name and symbol of the non fungible token, as defined in ERC721.
-    string public name = "Cryptohorses";
-    string public symbol = "CK";
+    string public name = "EtherHorse";
+    string public symbol = "EH";
 
     // bool public implementsERC721 = true;
     //
