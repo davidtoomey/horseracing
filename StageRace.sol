@@ -103,42 +103,69 @@ contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
     function _startRace(uint startRaceId, uint hOneId, uint hTwoId) internal {
         require(races[startRaceId].grandPrize > 0);
         RaceStage(startRaceId);
-        uint horseOneLevel = horses[hOneId].level;
-        uint horseTwoLevel = horses[hTwoId].level;
+        calculateProbabilities(startRaceId, hOneId, hTwoId);
+    }
+    
+    uint horseOneProbability;
+    uint horseTwoProbability;
+    
+    function calculateProbabilities(uint _raceId, uint _hOneId, uint _hTwoId) internal returns (uint, uint) {
+        uint horseOneLevel = horses[_hOneId].level;
+        uint horseTwoLevel = horses[_hTwoId].level;
         uint horseOneLevelDiff = horseOneLevel - horseTwoLevel;
         uint horseTwoLevelDiff = horseTwoLevel - horseOneLevel;
-        uint setHorseOneWinProbability;
-        uint setHorseTwoWinProbability;
+        uint horseOneWinProbability;
+        uint horseTwoWinProbability;
+        
         if (horseOneLevel == horseTwoLevel) {
-            setHorseOneWinProbability = 50;
-            setHorseTwoWinProbability = 50;
+            horseOneWinProbability = 50;
+            horseTwoWinProbability = 50;
         }
         if (horseOneLevelDiff >= 5) {
-            setHorseOneWinProbability = 75;
-            setHorseTwoWinProbability = 25;
+            horseOneWinProbability = 75;
+            horseTwoWinProbability = 25;
         }
         if (horseTwoLevelDiff >= 5) {
-            setHorseOneWinProbability = 25;
-            setHorseTwoWinProbability = 75;
+            horseOneWinProbability = 25;
+            horseTwoWinProbability = 75;
         }
         if (horseOneLevelDiff <= 4) {
-            setHorseOneWinProbability = 60;
-            setHorseTwoWinProbability = 40;
+            horseOneWinProbability = 60;
+            horseTwoWinProbability = 40;
         }
         if (horseTwoLevelDiff <= 4) {
-            setHorseOneWinProbability = 40;
-            setHorseTwoWinProbability = 60;
+            horseOneWinProbability = 40;
+            horseTwoWinProbability = 60;
         }
+        
+        horseOneWinProbability = horseOneProbability;
+        horseTwoWinProbability = horseTwoProbability;
+        
+        pickWinner(_raceId, horseOneProbability, horseTwoProbability);
+    }
+    
+    uint randNonce = 0;
+    
+    function randMod(uint _modulus) internal returns(uint) {
+        randNonce++;
+        return uint(keccak256(now, msg.sender, randNonce)) % _modulus;
     }
 
-    // function decideWinner(uint _raceId) internal {
-    //     Race storage _race = races[_raceId];
-    //     // _race.raceWinner.transfer(grandPrize);
-    //     // setProbabilities(_horseOne, _horseTwo);
-    // }
-    
-    // function setProbabilities(uint _horseOneId, uint _horseTwoId) internal {
+    function pickWinner(uint _raceId, uint _h0rseOneId, uint _h0rseTwoId) internal {
+        Horse storage h0rseOne = horses[_h0rseOneId];
+        Horse storage h0rseTwo = horses[_h0rseTwoId];
         
-    // }
+        uint rand = randMod(100);
+        if (rand <= horseOneProbability) {
+            h0rseOne.winCount++;
+            h0rseOne.level++;
+            h0rseTwo.lossCount++;
+            HorseIndexToOwner[_h0rseOneId].transfer(races[_raceId].grandPrize);
+        } else {
+            h0rseTwo.winCount++;
+            h0rseOne.lossCount++;
+            HorseIndexToOwner[_h0rseTwoId].transfer(races[_raceId].grandPrize);
+        }
+    }
     
 }
