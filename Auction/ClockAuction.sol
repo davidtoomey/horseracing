@@ -1,8 +1,9 @@
 pragma solidity ^0.4.18;
 
-import "./../ERC721Draft.sol";
+import "./../ERC721.sol";
 import "./ClockAuctionBase.sol";
-import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
+import "./../Ownable.sol";
+import "./../Pausable.sol";
 
 /// @title Clock auction for non-fungible tokens.
 contract ClockAuction is Pausable, ClockAuctionBase {
@@ -17,7 +18,7 @@ contract ClockAuction is Pausable, ClockAuctionBase {
         require(_cut <= 10000);
         ownerCut = _cut;
 
-        ERC721 candidateContract = ERC721(_nftAddress);
+        ERC721Original candidateContract = ERC721Original(_nftAddress);
         require(candidateContract.implementsERC721());
         nonFungibleContract = candidateContract;
     }
