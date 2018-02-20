@@ -109,7 +109,7 @@ contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
     uint horseOneProbability;
     uint horseTwoProbability;
     
-    function calculateProbabilities(uint _raceId, uint _hOneId, uint _hTwoId) internal returns (uint, uint) {
+    function calculateProbabilities(uint _raceId, uint _hOneId, uint _hTwoId) internal {
         uint horseOneLevel = horses[_hOneId].level;
         uint horseTwoLevel = horses[_hTwoId].level;
         uint horseOneLevelDiff = horseOneLevel - horseTwoLevel;
