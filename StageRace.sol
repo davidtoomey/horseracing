@@ -3,20 +3,22 @@ pragma solidity ^0.4.17;
 // import './HorseRace.sol';
 // import './Race.sol';
 import './HorseBase.sol';
-// import './HorseCore.sol';
-import './Ownable.sol';
+import './HorseCore.sol';
+// import './Ownable.sol';
 
-contract TwoPlayerRace is Ownable, HorseBase  {
+contract TwoPlayerRace is HorseBase, HorseCore  {
     
     // HorseRace _base;
+    string public nameOfRace;
 
-    function TwoPlayerRace(string nameOfRace, uint wager) public {
+    function TwoPlayerRace(string _nameOfRace, uint wager) public {
         _createRace(nameOfRace, wager);
         racingPlayers = 0;
+        nameOfRace = _nameOfRace;
     }
 
-    function name() external pure returns (string) {
-        return "2PR";
+    function getNameOfRace() external view returns (string) {
+        return nameOfRace;
     }
     
     function playerCount() external view returns (uint) {
