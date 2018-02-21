@@ -1,42 +1,41 @@
 pragma solidity ^0.4.17;
 
-import './HorseRace.sol';
-import './Race.sol';
+// import './HorseRace.sol';
+// import './Race.sol';
 import './HorseBase.sol';
-import './HorseCore.sol';
+// import './HorseCore.sol';
 import './Ownable.sol';
 
-contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
+contract TwoPlayerRace is Ownable, HorseBase  {
     
-    HorseRace _base;
+    // HorseRace _base;
 
     function TwoPlayerRace(string nameOfRace, uint wager) public {
-        // uint raceGrandPrize = wager*2;
         _createRace(nameOfRace, wager);
         racingPlayers = 0;
     }
 
-    // function name() external view returns (string) {
-    //     return "2PR";
-    // }
+    function name() external pure returns (string) {
+        return "2PR";
+    }
     
     function playerCount() external view returns (uint) {
         return racingPlayers;
     }
     
-    enum RaceStatus {
-        Started,
-        Finished,
-        Pending,
-        Cancelled
-    }
+    // enum RaceStatus {
+    //     Started,
+    //     Finished,
+    //     Pending,
+    //     Cancelled
+    // }
     
     struct Race {
         string raceName;
         uint stake;
         uint horseOneId;
         uint horseTwoId;
-        RaceStatus status;
+        // RaceStatus status;
         uint grandPrize;
         uint horseWinnerId;
         uint horseLoserId;
@@ -65,14 +64,14 @@ contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
             stake: _stake,
             horseOneId: 0,
             horseTwoId: 0,
-            status: RaceStatus.Pending,
+            // status: RaceStatus.Pending,
             grandPrize: 0,
             horseWinnerId: 0,
             horseLoserId: 0
         });
         uint newRaceId = races.push(_race) - 1;
         
-        RaceCreated(newRaceId, msg.sender);
+        // RaceCreated(newRaceId, msg.sender);
         
         return newRaceId;
     }
@@ -102,7 +101,7 @@ contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
     
     function _startRace(uint startRaceId, uint hOneId, uint hTwoId) internal {
         require(races[startRaceId].grandPrize > 0);
-        RaceStage(startRaceId);
+        // RaceStage(startRaceId);
         calculateProbabilities(startRaceId, hOneId, hTwoId);
     }
     
@@ -150,6 +149,10 @@ contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
         randNonce++;
         return uint(keccak256(now, msg.sender, randNonce)) % _modulus;
     }
+    
+    address public winnerAddress;
+    uint public winnerId;
+    uint public contractBalance = this.balance;
 
     function pickWinner(uint _raceId, uint _h0rseOneId, uint _h0rseTwoId) internal {
         Horse storage h0rseOne = horses[_h0rseOneId];
@@ -161,11 +164,15 @@ contract TwoPlayerRace is Race, HorseRace, Ownable, HorseBase, HorseCore  {
             h0rseOne.level++;
             h0rseTwo.lossCount++;
             HorseIndexToOwner[_h0rseOneId].transfer(races[_raceId].grandPrize);
+            winnerId = _h0rseOneId;
         } else {
             h0rseTwo.winCount++;
             h0rseOne.lossCount++;
             HorseIndexToOwner[_h0rseTwoId].transfer(races[_raceId].grandPrize);
+            winnerId = _h0rseTwoId;
         }
+        winnerAddress = HorseIndexToOwner[winnerId];
+        // RaceEnded(_raceId, winnerAddress);
     }
     
 }
