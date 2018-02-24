@@ -11,6 +11,11 @@ contract TwoPlayerRace is HorseBase, HorseCore  {
     // HorseRace _base;
     string public nameOfRace;
 
+
+    // STARTING TO THINK WAGER IS UNNECCESSARY IN CONSTRUCTOR FUNCTION
+    
+    // HOrseIndexToOwner can't read owner address from this contract
+
     function TwoPlayerRace(string _nameOfRace, uint wager) public {
         _createRace(nameOfRace, wager);
         racingPlayers = 0;
@@ -78,8 +83,11 @@ contract TwoPlayerRace is HorseBase, HorseCore  {
         return newRaceId;
     }
     
+    uint public raceGrandPrize;
+    
     function _enterRace(uint enterRaceId, uint enterHorseId) public payable {
-        require(msg.value > races[enterRaceId].stake);
+        // uint weiToEther = msg.value * 1000000000000000000;
+        // require(msg.value == races[enterRaceId].stake);
         require(HorseIndexToOwner[enterHorseId] == msg.sender);
         require(racingPlayers < 2);
         
@@ -94,8 +102,8 @@ contract TwoPlayerRace is HorseBase, HorseCore  {
         racingPlayers++;
         
         if (racingPlayers == 2) {
-            uint setGrandPrize = msg.value*2;
-            setGrandPrize = races[enterRaceId].grandPrize;
+            // uint stakeDoubled = races[enterRaceId].stake * 2;
+            raceGrandPrize = this.balance;
             _startRace(enterRaceId, races[enterRaceId].horseOneId, races[enterRaceId].horseTwoId);
         }
 
