@@ -1,24 +1,35 @@
 pragma solidity ^0.4.17;
 
-// import './HorseRace.sol';
-// import './Race.sol';
 import './HorseBase.sol';
 import './HorseCore.sol';
-// import './Ownable.sol';
 
 contract TwoPlayerRace is HorseBase, HorseCore  {
     
-    // HorseRace _base;
     string public nameOfRace;
-
+    
+    ERC721 public nonFungibleContract;
+    
+    // Need to eventually work in race events for UI purposes
 
     // STARTING TO THINK WAGER IS UNNECCESSARY IN CONSTRUCTOR FUNCTION
     
     // HOrseIndexToOwner can't read owner address from this contract
+    
+    // for this contract to be able to use the different horse ownership 
+    // functions, it must be called from HorseCore that's why it can't
+    // read HOrseIndexToOwner
+    
+    // the current race creation process is inefficient because the creator 
+    // of a race must undergo multiple transactions from race creation, to
+    // entering a horse into a race, to actually racing another horse
 
-    function TwoPlayerRace(string _nameOfRace, uint wager) public {
-        _createRace(nameOfRace, wager);
-        racingPlayers = 0;
+    function TwoPlayerRace(address _nftAddress, string _nameOfRace) public {
+        ERC721 candidateContract = ERC721(_nftAddress);
+        require(candidateContract.implementsERC721());
+        nonFungibleContract = candidateContract;
+        
+        _createRace(_nameOfRace);
+        racingPlayers = 0; 
         nameOfRace = _nameOfRace;
     }
 
@@ -39,7 +50,7 @@ contract TwoPlayerRace is HorseBase, HorseCore  {
     
     struct Race {
         string raceName;
-        uint stake;
+        // uint stake;
         uint horseOneId;
         uint horseTwoId;
         // RaceStatus status;
@@ -53,22 +64,10 @@ contract TwoPlayerRace is HorseBase, HorseCore  {
     Race[] public races;
     uint public racingPlayers;
     
-    function _createRace(
-        string _raceName, 
-        uint _stake 
-        // uint _horseOneId, 
-        // uint _horseTwoId,
-        // RaceStatus _status,
-        // uint _grandPrize,
-        // uint _horseWinnerId,
-        // uint _horseLoserId
-        
-    )   internal 
-        returns (uint) 
-    {
+    function _createRace(string _raceName) internal returns (uint) {
         Race memory _race = Race({
             raceName: _raceName,
-            stake: _stake,
+            // stake: _stake,
             horseOneId: 0,
             horseTwoId: 0,
             // status: RaceStatus.Pending,
